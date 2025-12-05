@@ -176,18 +176,26 @@ function SelectItem({ value, children, className, onSelect }: SelectItemProps & 
     let label = ''
     if (typeof children === 'string') {
       label = children
-    } else if (React.isValidElement(children) && children.props?.children) {
-      // Si es un elemento React con children, extraer el texto
-      const extractText = (node: any): string => {
-        if (typeof node === 'string') return node
-        if (typeof node === 'number') return String(node)
-        if (Array.isArray(node)) return node.map(extractText).join('')
-        if (React.isValidElement(node) && node.props?.children) {
-          return extractText(node.props.children)
+    } else if (React.isValidElement(children)) {
+      const props = children.props as { children?: React.ReactNode }
+      if (props?.children) {
+        // Si es un elemento React con children, extraer el texto
+        const extractText = (node: any): string => {
+          if (typeof node === 'string') return node
+          if (typeof node === 'number') return String(node)
+          if (Array.isArray(node)) return node.map(extractText).join('')
+          if (React.isValidElement(node)) {
+            const nodeProps = node.props as { children?: React.ReactNode }
+            if (nodeProps?.children) {
+              return extractText(nodeProps.children)
+            }
+          }
+          return ''
         }
-        return ''
+        label = extractText(props.children) || value
+      } else {
+        label = value
       }
-      label = extractText(children.props.children) || value
     } else {
       // Fallback: usar el value como label
       label = value
