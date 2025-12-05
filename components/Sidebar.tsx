@@ -192,7 +192,7 @@ export default function Sidebar({ stations, onLoadStations, onCalculateRoute, ro
                                     <CheckCircle2 className="w-3 h-3 text-green-600" />
                                     Recorrido Calculado
                                 </h3>
-                                {routeCost !== null && (
+                                {routeCost != null && (
                                     <Badge variant="secondary" className="text-[10px]">
                                         Costo: {routeCost.toFixed(2)}
                                     </Badge>
